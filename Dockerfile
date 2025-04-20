@@ -18,7 +18,8 @@ RUN mkdir -p /app/models/checkpoints && \
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
-# 📌 start.sh’ı çalıştırılabilir yap
+# 📌 start.sh'ı kopyala ve çalıştırılabilir yap
+COPY start.sh start.sh
 RUN chmod +x start.sh
 
 # Portu aç
