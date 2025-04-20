@@ -18,8 +18,11 @@ RUN mkdir -p /app/models/checkpoints && \
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
-# Portu expose et
+# 📌 start.sh’ı çalıştırılabilir yap
+RUN chmod +x start.sh
+
+# Portu aç
 EXPOSE 8188
 
-# Başlatma komutu
+# Başlat
 CMD ["bash", "start.sh"]
