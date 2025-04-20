@@ -1,26 +1,25 @@
 FROM python:3.10-slim
 
-RUN apt update && apt install -y git wget curl libgl1 libglib2.0-0 ffmpeg libsm6 libxext6 && \
-    apt clean
+# Sistem bağımlılıkları
+RUN apt update && apt install -y git wget curl libgl1 libglib2.0-0 ffmpeg libsm6 libxext6 && apt clean
 
 WORKDIR /app
 
-# ComfyUI CPU versiyonu
-RUN git clone https://github.com/ltdrdata/ComfyUI-CPU.git .
+# 1. Orijinal ComfyUI klonla
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
 
-# Flux modelini indir
+# 2. Flux modelini indir
 RUN mkdir -p /app/models/checkpoints && \
     curl -L -o /app/models/checkpoints/flux.safetensors https://huggingface.co/SimianLuo/Flux-V3/resolve/main/flux-v3.safetensors
 
-# Python bağımlılıkları
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# 3. Bağımlılıkları yükle
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# CPU moduna zorla
-ENV PYTORCH_ENABLE_MPS_FALLBACK=1
-ENV CUDA_VISIBLE_DEVICES=""
+# 4. CUDA'yı Bypass eden patch dosyasını kopyala
+COPY cpu_patch.py cpu_patch.py
+RUN python3 cpu_patch.py
 
-# start.sh dosyasını kopyala
+# 5. start.sh dosyasını kopyala
 COPY start.sh start.sh
 RUN chmod +x start.sh
 
